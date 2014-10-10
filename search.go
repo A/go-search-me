@@ -50,7 +50,6 @@ func loadEngines() map[string]string {
 	engines := make(map[string]string)
 	loadEnginesFile("engines.json", &engines)
 	loadEnginesFile(os.Getenv("HOME")+"/.search.json", &engines)
-	fmt.Println(engines)
 	return engines
 }
 
@@ -59,6 +58,5 @@ func loadEnginesFile(path string, engines *map[string]string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	content := []byte(string(buffer))
-	json.Unmarshal(content, &engines)
+	json.Unmarshal(buffer, &engines)
 }
