@@ -3,7 +3,10 @@ package main
 import (
 	"flag"
 	// "fmt"
+	"io/ioutil"
 	"net/url"
+	// "os"
+	"encoding/json"
 	"os/exec"
 	"strings"
 )
@@ -40,10 +43,15 @@ func parseQuery(args []string) string {
 	return url.QueryEscape(query)
 }
 
+type Engine struct {
+	url string
+}
+
 // TODO: load json from engines.json && ~/.search.json
 func loadEngines() map[string]string {
+	file, _ := ioutil.ReadFile("engines.json")
+	content := []byte(string(file))
 	engines := make(map[string]string)
-	engines["google"] = "http://google.com/#q=%s"
-	engines["ddg"] = "http://duckduckgo.com/?q=%s"
+	json.Unmarshal(content, &engines)
 	return engines
 }
