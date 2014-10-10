@@ -19,7 +19,7 @@ func main() {
 
 func parse() string {
 	args := parseFlags()
-	engine := parseEngine(args)
+	engine, args := parseEngine(args)
 	query := parseQuery(args)
 	url := strings.Replace(engine, "%s", query, -1)
 	return url
@@ -30,11 +30,15 @@ func parseFlags() []string {
 	return flag.Args()
 }
 
-func parseEngine(args []string) string {
+func parseEngine(args []string) (string, []string) {
 	engines := loadEngines()
 	name := args[0]
-	engine := engines[name]
-	return engine
+	if engine, ok := engines[name]; ok {
+		args := args[1:]
+		return engine, args
+	}
+	engine := engines["google"]
+	return engine, args
 }
 
 func parseQuery(args []string) string {
