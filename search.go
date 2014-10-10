@@ -2,26 +2,24 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	// "fmt"
 	"net/url"
-	// "os/exec"
+	"os/exec"
 	"strings"
 )
 
 func main() {
 	url := parse()
-	fmt.Println(url)
-
-	// cmd := exec.Command("open", url)
-	// cmd.Start()
+	cmd := exec.Command("open", url)
+	cmd.Start()
 }
 
 func parse() string {
 	args := parseFlags()
 	engine := parseEngine(args)
 	query := parseQuery(args)
-	fmt.Println(query)
-	return engine
+	url := strings.Replace(engine, "%s", query, -1)
+	return url
 }
 
 func parseFlags() []string {
@@ -29,6 +27,7 @@ func parseFlags() []string {
 	return flag.Args()
 }
 
+// TODO: Support search with default engine
 func parseEngine(args []string) string {
 	engines := loadEngines()
 	name := args[0]
@@ -48,14 +47,3 @@ func loadEngines() map[string]string {
 	engines["ddg"] = "http://duckduckgo.com/?q=%s"
 	return engines
 }
-
-// func getUrl(args []string) string {
-// 	engine, query := parse(args)
-// 	engine + query
-// 	url := replace()
-// 	return url
-// }
-//
-// func parse(args []string) (string, []string) {
-// 	query := QueryEscape(string())
-// }
