@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -46,10 +45,6 @@ func parseQuery(args []string) string {
 	return url.QueryEscape(query)
 }
 
-type Engine struct {
-	url string
-}
-
 func loadEngines() map[string]string {
 	engines := make(map[string]string)
 	loadEnginesFile("engines.json", &engines)
@@ -58,9 +53,6 @@ func loadEngines() map[string]string {
 }
 
 func loadEnginesFile(path string, engines *map[string]string) {
-	buffer, err := ioutil.ReadFile(path)
-	if err != nil {
-		fmt.Println(err)
-	}
+	buffer, _ := ioutil.ReadFile(path)
 	json.Unmarshal(buffer, &engines)
 }
