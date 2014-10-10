@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
-	// "fmt"
+	"fmt"
 	"io/ioutil"
 	"net/url"
-	// "os"
-	"encoding/json"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -30,7 +30,6 @@ func parseFlags() []string {
 	return flag.Args()
 }
 
-// TODO: Support search with default engine
 func parseEngine(args []string) string {
 	engines := loadEngines()
 	name := args[0]
@@ -47,11 +46,19 @@ type Engine struct {
 	url string
 }
 
-// TODO: load json from engines.json && ~/.search.json
 func loadEngines() map[string]string {
-	file, _ := ioutil.ReadFile("engines.json")
-	content := []byte(string(file))
 	engines := make(map[string]string)
-	json.Unmarshal(content, &engines)
+	loadEnginesFile("engines.json", &engines)
+	loadEnginesFile(os.Getenv("HOME")+"/.search.json", &engines)
+	fmt.Println(engines)
 	return engines
+}
+
+func loadEnginesFile(path string, engines *map[string]string) {
+	buffer, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Println(err)
+	}
+	content := []byte(string(buffer))
+	json.Unmarshal(content, &engines)
 }
