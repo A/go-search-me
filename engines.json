@@ -1,6 +1,6 @@
 {
-  "main": "http://google.com/?#q=%s",
-  "google": "http://google.com/?#q=%s",
+  "main": "http://google.com/search?q=%s",
+  "google": "http://google.com/search?q=%s",
   "ddg": "https://duckduckgo.com/?q=%s",
   "jquery": "http://api.jquery.com/?q=%s",
   "mdn": "http://developer.mozilla.org/?q=%s",
