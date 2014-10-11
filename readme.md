@@ -7,6 +7,7 @@ Open your browser from terminal to search things.
 ### Development
 
 ```
+go get
 go run search.go ddg adventure time !v
 ```
 

@@ -3,17 +3,16 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/url"
 	"os"
-	"os/exec"
 	"strings"
 )
 
 func main() {
 	url := parse()
-	cmd := exec.Command("open", url)
-	cmd.Start()
+	open.Run(url)
 }
 
 func parse() string {
