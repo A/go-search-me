@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/url"
@@ -17,6 +18,9 @@ func main() {
 
 func parse() string {
 	args := parseFlags()
+	if len(args) == 0 {
+		usage()
+	}
 	engine, args := parseEngine(args)
 	query := parseQuery(args)
 	url := strings.Replace(engine, "%s", query, -1)
@@ -28,6 +32,25 @@ func parseFlags() []string {
 	return flag.Args()
 }
 
+func usage() {
+	pattern := "search-me %s query string"
+	engines := loadEngines()
+	search_examples := ""
+	for name := range engines {
+		search_examples += fmt.Sprintf(pattern, name) + "\n"
+	}
+	fmt.Printf(`Usage:
+
+Pattern:
+
+` + fmt.Sprintf(pattern, "[engine]") + `
+
+Examples:
+
+` + search_examples)
+	os.Exit(1)
+}
+
 func parseEngine(args []string) (string, []string) {
 	engines := loadEngines()
 	name := args[0]
@@ -35,7 +58,7 @@ func parseEngine(args []string) (string, []string) {
 		args := args[1:]
 		return engine, args
 	}
-	engine := engines["google"]
+	engine := engines["main"]
 	return engine, args
 }
 
