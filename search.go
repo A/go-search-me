@@ -11,44 +11,33 @@ import (
 	"strings"
 )
 
+var (
+	listFlag *bool
+)
+
 func main() {
 	url := parse()
-	open.Run(url)
+	open.Start(url)
 }
 
 func parse() string {
 	args := parseFlags()
-	if len(args) == 0 {
-		usage()
-	}
 	engine, args := parseEngine(args)
 	query := parseQuery(args)
-	url := strings.Replace(engine, "%s", query, -1)
+	url := fmt.Sprintf(engine, query)
 	return url
 }
 
 func parseFlags() []string {
 	flag.Parse()
-	return flag.Args()
-}
-
-func usage() {
-	pattern := "search-me %s query string"
-	engines := loadEngines()
-	search_examples := ""
-	for name := range engines {
-		search_examples += fmt.Sprintf(pattern, name) + "\n"
+	args := flag.Args()
+	if *listFlag {
+		printListEngines()
 	}
-	fmt.Printf(`Usage:
-
-Pattern:
-
-` + fmt.Sprintf(pattern, "[engine]") + `
-
-Examples:
-
-` + search_examples)
-	os.Exit(1)
+	if len(args) == 0 {
+		flag.Usage()
+	}
+	return flag.Args()
 }
 
 func parseEngine(args []string) (string, []string) {
@@ -77,4 +66,42 @@ func loadEngines() map[string]string {
 func loadEnginesFile(path string, engines *map[string]string) {
 	buffer, _ := ioutil.ReadFile(path)
 	json.Unmarshal(buffer, &engines)
+}
+
+func init() {
+	const (
+		help_usage = "print this help"
+		list_usage = "list of defined engines"
+	)
+	flag.Bool("h", false, help_usage)
+	listFlag = flag.Bool("list", false, list_usage)
+
+	flag.Usage = func() {
+		pattern := "search-me %s query string"
+		engines := loadEngines()
+		search_examples := ""
+		for name := range engines {
+			search_examples += "  " + fmt.Sprintf(pattern, name) + "\n"
+		}
+		fmt.Println("Options:")
+		flag.PrintDefaults()
+		fmt.Print(`
+Usage:
+  ` + fmt.Sprintf(pattern, "[engine]") + `
+
+Examples:
+` + search_examples)
+		os.Exit(0)
+	}
+}
+
+func printListEngines() {
+	engines := loadEngines()
+	configured_engines := ""
+	for name, url := range engines {
+		configured_engines += name + `: ` + url + "\n"
+	}
+	fmt.Print(`Configured engines:
+` + configured_engines)
+	os.Exit(0)
 }
