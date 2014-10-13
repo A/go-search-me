@@ -33,6 +33,13 @@ to `~/.search.json`:
 engine-name http://example.com/?q=%s
 ```
 
+Also, you can redefine `main` engine, that used for no engines matched. Just
+add to your `~/.search`:
+
+```
+main http://best-search.ever/?q=%s
+```
+
 ### Aliases
 
 You can alias your favorite engines. For example
