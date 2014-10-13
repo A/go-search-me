@@ -1,13 +1,14 @@
 package main
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"flag"
 	"fmt"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -58,14 +59,43 @@ func parseQuery(args []string) string {
 
 func loadEngines() map[string]string {
 	engines := make(map[string]string)
-	loadEnginesFile("engines.json", &engines)
-	loadEnginesFile(os.Getenv("HOME")+"/.search.json", &engines)
+	loadEnginesFile("engines.conf", &engines)
+	loadEnginesFile(os.Getenv("HOME")+"/.search", &engines)
 	return engines
 }
 
 func loadEnginesFile(path string, engines *map[string]string) {
+	enginesPtr := *engines
 	buffer, _ := ioutil.ReadFile(path)
-	json.Unmarshal(buffer, &engines)
+	file := string(buffer)
+	lines := strings.Split(file, "\n")
+	for k := range lines {
+		line := trim(lines[k])
+		engine := RegSplit(line, `\s+`)
+		if len(engine) == 2 {
+			enginesPtr[engine[0]] = engine[1]
+		}
+	}
+}
+
+// Trim comments
+func trim(str string) string {
+	re := regexp.MustCompile(`(^|\s)#(.*)$`)
+	line := strings.TrimSpace(str)
+	return re.ReplaceAllLiteralString(line, "")
+}
+
+func RegSplit(text string, delimeter string) []string {
+	reg := regexp.MustCompile(delimeter)
+	indexes := reg.FindAllStringIndex(text, -1)
+	laststart := 0
+	result := make([]string, len(indexes)+1)
+	for i, element := range indexes {
+		result[i] = text[laststart:element[0]]
+		laststart = element[1]
+	}
+	result[len(indexes)] = text[laststart:len(text)]
+	return result
 }
 
 func init() {
