@@ -24,7 +24,7 @@ search-me vim screencast
 - google: `http://google.com/`
 - ddg: `https://duckduckgo.com/`
 
-#### Define your engines
+### Define your engines
 
 See [config_example][1]. Feel free to place your favorite search engines
 to `~/.search.json`:
@@ -33,7 +33,7 @@ to `~/.search.json`:
 engine-name http://example.com/?q=%s
 ```
 
-#### Aliases
+### Aliases
 
 You can alias your favorite engines. For example
 
@@ -43,11 +43,11 @@ alias google=searh-me google
 alias jquery=search-me jquery
 ```
 
-#### Dotfiles
+### Dotfiles
 
 You can save your favorite search engines into [dotfiles][2] to never miss it!
 
-#### Development
+### Development
 
 ```
 go get
