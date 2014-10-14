@@ -58,8 +58,7 @@ func parseQuery(args []string) string {
 }
 
 func loadEngines() map[string]string {
-	engines := make(map[string]string)
-	loadEnginesFile("engines.conf", &engines)
+	engines := map[string]string{"main": "http://google.com?#q=%s"}
 	loadEnginesFile(os.Getenv("HOME")+"/.search", &engines)
 	return engines
 }
